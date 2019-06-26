@@ -1,0 +1,63 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ocid: MyString
+  tender_id: MyString
+  title_en: MyString
+  title_fr: MyString
+  description_en: MyString
+  description_fr: MyString
+  recurrence_description_en: MyString
+  recurrence_description_fr: MyString
+  options_en: MyString
+  options_fr: MyString
+  contract_start_date: 2019-06-26 12:40:12
+  contract_end_date: 2019-06-26 12:40:12
+  procurement_method: MyString
+  procurement_method_details_en: MyString
+  procurement_method_details_fr: MyString
+  rfp_due_date: 2019-06-26 12:40:12
+  rfp_description_en: MyString
+  rfp_description_fr: MyString
+  tender_period_start_date: 2019-06-26 12:40:12
+  tender_period_end_date: 2019-06-26 12:40:12
+  submission_method_details_en: MyString
+  submission_method_details_fr: MyString
+  submission_method: MyString
+  eligibility_criteria_en: MyString
+  eligibility_criteria_fr: MyString
+  award_criteria: MyString
+  award_criteria_details_en: MyString
+  award_criteria_details_fr: MyString
+  contact: one
+
+two:
+  ocid: MyString
+  tender_id: MyString
+  title_en: MyString
+  title_fr: MyString
+  description_en: MyString
+  description_fr: MyString
+  recurrence_description_en: MyString
+  recurrence_description_fr: MyString
+  options_en: MyString
+  options_fr: MyString
+  contract_start_date: 2019-06-26 12:40:12
+  contract_end_date: 2019-06-26 12:40:12
+  procurement_method: MyString
+  procurement_method_details_en: MyString
+  procurement_method_details_fr: MyString
+  rfp_due_date: 2019-06-26 12:40:12
+  rfp_description_en: MyString
+  rfp_description_fr: MyString
+  tender_period_start_date: 2019-06-26 12:40:12
+  tender_period_end_date: 2019-06-26 12:40:12
+  submission_method_details_en: MyString
+  submission_method_details_fr: MyString
+  submission_method: MyString
+  eligibility_criteria_en: MyString
+  eligibility_criteria_fr: MyString
+  award_criteria: MyString
+  award_criteria_details_en: MyString
+  award_criteria_details_fr: MyString
+  contact: two

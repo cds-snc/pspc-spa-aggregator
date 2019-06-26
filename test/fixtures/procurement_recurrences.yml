@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_date: 2019-06-26 12:40:49
+  end_date: 2019-06-26 12:40:49
+  max_date: 2019-06-26 12:40:49
+  duration_in_days: 
+  procurement: one
+
+two:
+  start_date: 2019-06-26 12:40:49
+  end_date: 2019-06-26 12:40:49
+  max_date: 2019-06-26 12:40:49
+  duration_in_days: 
+  procurement: two
