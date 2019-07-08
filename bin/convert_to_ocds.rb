@@ -11,8 +11,10 @@ ftp = ARGV[0].upcase.to_sym
 
 conv = if ftp == :AB
   Converter::Alberta.new
+elsif ftp == :BC
+  Converter::BritishColumbia.new
 else
-  puts "Unknown ftp value #{ftp}, expected one of: ab"
+  puts "Unknown ftp value #{ftp}, expected one of: ab, bc"
 end
 
 if !File.exists?(ARGV[1])
@@ -21,6 +23,8 @@ if !File.exists?(ARGV[1])
 end
 
 data = File.open(ARGV[1]).read
+data.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+
 ops = conv.parse(data)
 
 puts Converter::OCDS.ToJSON(ops)

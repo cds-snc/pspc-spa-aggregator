@@ -16,8 +16,8 @@ class Alberta
       tender.title_en = get(op, :Title)
       tender.description_en = get(op, :LongDescription)
       tender.proc_method_details_en = get(op, :ResponseSpecifics)
-      tender.tender_period.start_date = get(op, :PostDateUtc)
-      tender.tender_period.end_date = get(op, :CloseDateUtc)
+      tender.tender_period.start_date = DateTime.parse(get(op, :PostDateUtc))
+      tender.tender_period.end_date = DateTime.parse(get(op, :CloseDateUtc))
       tender.submission_method_details_en = get(op, :SubmissionAddress)
       tender.agreements = get(op, :AgreementType).split(/\s*&\s*/)
 
