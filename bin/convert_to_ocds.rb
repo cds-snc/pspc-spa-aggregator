@@ -13,8 +13,10 @@ conv = if ftp == :AB
   Converter::Alberta.new
 elsif ftp == :BC
   Converter::BritishColumbia.new
+elsif ftp == :NS
+  Converter::NovaScotia.new
 else
-  puts "Unknown ftp value #{ftp}, expected one of: ab, bc"
+  puts "Unknown ftp value #{ftp}, expected one of: ab, bc, ns"
 end
 
 if !File.exists?(ARGV[1])

@@ -194,9 +194,9 @@ class Dates
 
   def ToOCDS
     ret = {}
-    ret[:startDate] = @start_date.utc unless @start_date.blank?
-    ret[:endDate] = @end_date.utc unless @end_date.blank?
-    ret[:maxExtentDate] = @max_date.utc unless @max_date.blank?
+    ret[:startDate] = @start_date.iso8601 unless @start_date.blank?
+    ret[:endDate] = @end_date.iso8601 unless @end_date.blank?
+    ret[:maxExtentDate] = @max_date.iso8601 unless @max_date.blank?
     ret[:durationInDays] = @duration_in_days.to_i unless @duration_in_days.blank?
     ret
   end
@@ -218,5 +218,6 @@ end
 
 autoload :Alberta, 'converter/alberta'
 autoload :BritishColumbia, 'converter/british_columbia'
+autoload :NovaScotia, 'converter/nova_scotia'
 
 end  # Converter
