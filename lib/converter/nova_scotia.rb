@@ -1,20 +1,9 @@
-require 'csv'
+require 'converter/csv'
 
 module Converter
 
-class NovaScotia
-  def parse(input)
-    csv = CSV.new(input)
-    header = csv.shift
-    entries = []
-    csv.each do |row|
-      r = {}
-      row.each_with_index do |item, idx|
-        r[header[idx].to_sym] = item
-      end
-      entries << r
-    end
-
+class NovaScotia < Converter::CSVInput
+  def process(entries)
     ops = []
     entries.each do |entry|
       op = Opportunity.new
