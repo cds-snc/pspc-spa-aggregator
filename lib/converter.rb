@@ -219,5 +219,6 @@ autoload :Alberta, 'converter/alberta'
 autoload :BritishColumbia, 'converter/british_columbia'
 autoload :NovaScotia, 'converter/nova_scotia'
 autoload :Nunavut, 'converter/nunavut'
+autoload :Yukon, 'converter/yukon'
 
 end  # Converter
