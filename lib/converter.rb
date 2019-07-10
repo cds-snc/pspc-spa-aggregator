@@ -123,7 +123,7 @@ class Opportunity
     ret[:submissionMethodDetails_fr] =
         @submission_method_details_fr unless @submission_method_details_fr.blank?
 
-    ret[:coveredBy] = @agreements unless @agreements.empty?
+    ret[:coveredBy] = @agreements unless @agreements.nil? || @agreements.empty?
     ret
   end
 end
@@ -162,8 +162,7 @@ class ProcuringEntity
 end
 
 class Contact
-  attr_accessor :name, :email, :phone, :fax, :url
-  attr_reader :languages
+  attr_accessor :name, :email, :phone, :fax, :url, :languages
 
   def initialize
     @languages = []
@@ -219,5 +218,6 @@ end
 autoload :Alberta, 'converter/alberta'
 autoload :BritishColumbia, 'converter/british_columbia'
 autoload :NovaScotia, 'converter/nova_scotia'
+autoload :Nunavut, 'converter/nunavut'
 
 end  # Converter

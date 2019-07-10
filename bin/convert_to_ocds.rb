@@ -15,8 +15,10 @@ elsif ftp == :BC
   Converter::BritishColumbia.new
 elsif ftp == :NS
   Converter::NovaScotia.new
+elsif ftp = :NU
+  Converter::Nunavut.new
 else
-  puts "Unknown ftp value #{ftp}, expected one of: ab, bc, ns"
+  puts "Unknown ftp value #{ftp}, expected one of: ab, bc, ns, nu"
 end
 
 if !File.exists?(ARGV[1])
