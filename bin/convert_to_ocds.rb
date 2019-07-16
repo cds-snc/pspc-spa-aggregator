@@ -3,24 +3,26 @@
 require 'converter'
 
 if ARGV.size < 2
-  puts "Missing options: convert_to_ocds.rb [ftp] [filename]"
+  puts "Missing options: convert_to_ocds.rb [FPT] [filename]"
   exit
 end
 
-ftp = ARGV[0].upcase.to_sym
+fpt = ARGV[0].upcase.to_sym
 
-conv = if ftp == :AB
+conv = if fpt == :AB
   Converter::Alberta.new
-elsif ftp == :BC
+elsif fpt == :BC
   Converter::BritishColumbia.new
-elsif ftp == :NS
+elsif fpt == :NS
   Converter::NovaScotia.new
-elsif ftp == :NU
+elsif fpt == :NU
   Converter::Nunavut.new
-elsif ftp == :YK
+elsif fpt == :QC
+  Converter::Quebec.new
+elsif fpt == :YK
   Converter::Yukon.new
 else
-  puts "Unknown ftp value #{ftp}, expected one of: ab, bc, ns, nu, yk"
+  puts "Unknown FPT value #{fpt}, expected one of: ab, bc, ns, nu, qc, yk"
   exit
 end
 
