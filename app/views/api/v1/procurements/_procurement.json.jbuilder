@@ -2,9 +2,11 @@ json.ocid procurement.ocid
 json.initiationType 'tender'
 json.language 'en'
 
-json.parties do
-  json.array! [procurement.procuring_entity],
-      partial: 'api/v1/procurements/party', as: :party
+if !procurement.procuring_entity.nil?
+  json.parties do
+    json.array! [procurement.procuring_entity],
+        partial: 'api/v1/procurements/party', as: :party
+  end
 end
 
 json.tender do

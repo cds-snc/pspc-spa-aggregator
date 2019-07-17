@@ -8,21 +8,23 @@ json.items do
   json.array! tender.items, partial: 'api/v1/procurements/item', as: :item
 end
 
-json.procuringEntity do
-  json.id tender.procuring_entity.identifier
-  json.name tender.procuring_entity.name_en
-  json.name_fr tender.procuring_entity.name_fr
+if !tender.procuring_entity.nil?
+  json.procuringEntity do
+    json.id tender.procuring_entity.identifier
+    json.name tender.procuring_entity.name_en
+    json.name_fr tender.procuring_entity.name_fr
 
-  json.contactPoint do
-    json.name tender.contact.name unless tender.contact.name.blank?
-    json.email tender.contact.email unless tender.contact.email.blank?
-    json.telephone tender.contact.phone unless tender.contact.phone.blank?
-    json.faxNumber tender.contact.fax unless tender.contact.fax.blank?
-    json.url tender.contact.url unless tender.contact.url.blank?
+    json.contactPoint do
+      json.name tender.contact.name unless tender.contact.name.blank?
+      json.email tender.contact.email unless tender.contact.email.blank?
+      json.telephone tender.contact.phone unless tender.contact.phone.blank?
+      json.faxNumber tender.contact.fax unless tender.contact.fax.blank?
+      json.url tender.contact.url unless tender.contact.url.blank?
 
-    if !tender.contact.languages.empty?
-      json.availableLanguage do
-        json.array! tender.contact.languages.collect { |l| l.code }
+      if !tender.contact.languages.empty?
+        json.availableLanguage do
+          json.array! tender.contact.languages.collect { |l| l.code }
+        end
       end
     end
   end

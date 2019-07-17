@@ -8,8 +8,22 @@ end
 data = File.open(ARGV[0], "r:bom|utf-8").read
 ocid = JSON.parse(data)
 ocid['releases'].each do |rel|
-  p = Procurement.new
-  p.ocid = rel['ocid']
+  p = Procurement.find_or_create_by(ocid: rel['ocid'])
+
+  parties = {}
+  rel['parties'].each do |party|
+    entity = ProcuringEntity.find_or_create_by(name_en: party['name'])
+    entity.name_en = party['name']
+    entity.name_fr = party['name_fr']
+
+    if party.has_key?('address')
+      entity.street_address = party['address']['streetAddress']
+      entity.city = party['address']['locality']
+      entity.province = party['address']['region']
+      entity.postal_code = party['address']['postalCode']
+    end
+    parties[entity.identifier] = entity
+  end
 
   tender = rel['tender']
   p.tender_id = tender['id']
@@ -20,8 +34,7 @@ ocid['releases'].each do |rel|
 
   if tender.has_key?('items') && tender['items'].is_a?(Array)
     tender['items'].each do |item|
-      i = ProcurementItem.new
-      i.identifier = item['id']
+      i = ProcurementItem.find_or_create_by(identifier: item['id'])
       i.description_en = item['description']
       i.description_fr = item['description_fr']
       i.quantity = item['quantity']
@@ -35,20 +48,8 @@ ocid['releases'].each do |rel|
   if tender.has_key?('procuringEntity')
     pe = tender['procuringEntity']
 
-    entity = ProcuringEntity.new
-    entity.identifier = pe['id']
-    entity.name_en = pe['name']
-    entity.name_fr = pe['name_fr']
-
-    if pe.has_key?('address')
-      entity.street_address = pe['address']['streetAddress']
-      entity.city = pe['address']['locality']
-      entity.province = pe['address']['region']
-      entity.postal_code = pe['address']['postalCode']
-    end
-
     contact = Contact.new
-    contact.procuring_entity = entity
+    contact.procuring_entity = parties[pe['id']]
 
     if pe.has_key?('contactPoint')
       contact.name = pe['contactPoint']['name']
@@ -91,14 +92,25 @@ ocid['releases'].each do |rel|
   p.procurement_method_details_en = tender['procurementMethodDetails']
   p.procurement_method_details_fr = tender['procurementMethodDetails_fr']
 
+  modalities = tender['procurementMethodModalities'] || []
+  modalities.each do |mod|
+    p.use_electronic_auction = true if mod == 'electronicAuction'
+    p.is_negotiated = true if mod == 'negotiated'
+  end
+
   if tender.has_key?('milestones') && tender['milestones'].is_a?(Array)
     tender['milestones'].each do |milestone|
-      next unless milestone['type'] == 'RFP'
-
-      p.rfp_due_date = milestone['dueDate']
-      p.rfp_description_en = milestone['description']
-      p.rfp_description_fr = milestone['description_fr']
-      break
+      if milestone['type'] == 'requestToParticipate'
+        p.rfp_due_date = milestone['dueDate']
+        p.rfp_description_en = milestone['description']
+        p.rfp_description_fr = milestone['description_fr']
+      elsif milestone['type'] == 'delivery'
+        p.delivery_date = milestone['dueDate']
+        if milestone.has_key?('period')
+          p.delivery_start_date = milestone['period']['startDate']
+          p.delivery_end_date = milestone['period']['endDate']
+        end
+      end
     end
   end
 
@@ -120,7 +132,7 @@ ocid['releases'].each do |rel|
 
   if tender.has_key?('coveredBy')
     tender['coveredBy'].each do |name|
-      p << ProcurementTradeAgreement.new(name: name)
+      p.trade_agreements << ProcurementTradeAgreement.find_or_create_by(name: name)
     end
   end
 
