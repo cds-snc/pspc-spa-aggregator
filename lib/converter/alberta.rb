@@ -32,7 +32,7 @@ class Alberta
   private
 
   def get(op, name)
-    op.xpath(name.to_s).text
+    op.xpath(name.to_s).text.strip
   end
 end  # Alberta
 

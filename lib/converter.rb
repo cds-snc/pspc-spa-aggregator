@@ -1,4 +1,5 @@
 require 'json'
+require 'securerandom'
 
 module Converter
 
@@ -15,6 +16,7 @@ class OCDS
         https://github.com/open-contracting-extensions/ocds_recurrence_extension
         https://github.com/open-contracting-extensions/ocds_additionalContactPoints_extension
         https://github.com/open-contracting-extensions/ocds_coveredBy_extension
+        https://github.com/open-contracting-extensions/ocds_procurementMethodModalities_extension
       ),
 
       releases: []
@@ -25,6 +27,7 @@ class OCDS
         ocid: op.ocid,
         initiationType: 'tender',
         language: 'en',
+        parties: [op.procuring_entity.ToPartiesOCDS],
         tender: op.ToOCDS
       }
     end
@@ -42,16 +45,17 @@ class Opportunity
     :award_criteria_details_en, :award_criteria_details_fr, :options_en,
     :options_fr, :agreements, :recurrence_description_en,
     :recurrence_description_fr, :rfp_date, :rfp_description_en,
-    :rfp_description_fr
+    :rfp_description_fr, :use_electronic_auction, :is_negotiated
 
   attr_reader :tender_period, :contract_period, :recurrence_period,
-    :procuring_entity, :items
+    :procuring_entity, :items, :delivery_period
 
   def initialize
     @procuring_entity = ProcuringEntity.new
     @tender_period = Dates.new
     @contract_period = Dates.new
     @recurrence_period = Dates.new
+    @delivery_period = Dates.new
     @items = []
   end
 
@@ -62,7 +66,7 @@ class Opportunity
   def ToOCDS
     ret = { id: @tender_id, }
 
-    ret[:procuringEntity] = @procuring_entity.ToOCDS if @procuring_entity.has_data?
+    ret[:procuringEntity] = @procuring_entity.ToProcuringEntityOCDS if @procuring_entity.has_data?
 
     ret[:title] = @title_en unless @title_en.blank?
     ret[:title_fr] = @title_fr unless @title_fr.blank?
@@ -90,12 +94,31 @@ class Opportunity
     ret[:items] = @items.collect { |i| i.ToOCDS } unless @items.empty?
 
     if !@rfp_date.blank? || !@rfp_description_en.blank? || !@rfp_description_fr.blank?
-      rfp = { type: :RFP }
+      rfp = { type: :requestToParticipate}
       rfp[:dueDate] = @rfp_date unless @rfp_date.blank?
       rfp[:description] = @rfp_description_en unless @rfp_description_en.blank?
       rfp[:description_fr] = @rfp_description_fr unless @rfp_description_fr.blank?
 
-      ret[:milestones] = [rfp]
+      ret[:milestones] ||= []
+      ret[:milestones] << rfp
+    end
+
+    if @delivery_period.has_data?
+      del = { type: :delivery }
+      del[:dueDate] = @deliver_period.max_date unless @deliver_perid.max_date.blank?
+      if !@delivery_period.start_date.blank? || !@delivery_period.end_date.blank?
+        del[:period] = {}
+        del[:period][:startDate] = @delivery_period.start_date unless @delivery_period.start_date.blank?
+        del[:period][:endDate] = @delivery_period.end_date unless @delivery_period.end_date.blank?
+      end
+      ret[:milestones] ||= []
+      ret[:milestones] << del
+    end
+
+    if !@use_electronic_auction.blank? || !@is_negotiated.blank?
+      rel[:procurementMethodModalities] = []
+      ret[:procurementMethodModalities] << :electronicAuction unless @use_electronic_auction.blank? || !@use_electronic_auction
+      ret[:procurementMethodModalities] << :negotiated unless @negotiated.blank? || !@negotiated
     end
 
     ret[:awardCriteria] = @award_criteria unless @award_criteria.blank?
@@ -134,6 +157,7 @@ class ProcuringEntity
 
   def initialize
     @contact = Contact.new
+    @id = SecureRandom.uuid
   end
 
   def has_data?
@@ -141,9 +165,10 @@ class ProcuringEntity
         !@city.blank? || !@province.blank? || !@postal_code.blank?
   end
 
-  def ToOCDS
+  def ToPartiesOCDS
     ret = {}
-    ret[:id] = @name_en unless @name_en.blank?
+    ret[:id] = @id
+    ret[:roles] = ['procuringEntity']
     ret[:name] = @name_en unless @name_en.blank?
     ret[:name_fr] = @name_fr unless @name_fr.blank?
 
@@ -155,7 +180,14 @@ class ProcuringEntity
       address[:postalCode] = @postal_code unless @postal_code.blank?
       ret[:address] = address
     end
+    ret
+  end
 
+  def ToProcuringEntityOCDS
+    ret = {}
+    ret[:id] = @id
+    ret[:name] = @name_en unless @name_en.blank?
+    ret[:name_fr] = @name_fr unless @name_fr.blank?
     ret[:contactPoint] = contact.ToOCDS if contact.has_data?
     ret
   end
