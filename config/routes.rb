@@ -5,4 +5,6 @@ Rails.application.routes.draw do
       resources :procurements, only: [:index, :show]
     end
   end
+
+  root to: 'api/v1/procurements#index'
 end

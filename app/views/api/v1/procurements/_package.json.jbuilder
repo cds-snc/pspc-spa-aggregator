@@ -1,5 +1,5 @@
 json.publisher do
-  json.name "Aggregator"
+  json.name "SPA"
 end
 
 json.license "http://open.canada.ca/en/open-government-licence-canada"
@@ -10,7 +10,9 @@ json.extensions do
     https://github.com/open-contracting-extensions/ocds_options_extension
     https://github.com/open-contracting-extensions/ocds_recurrence_extension
     https://github.com/open-contracting-extensions/ocds_additionalContactPoints_extension
-    https://github.com/open-contracting-extensions/ocds_coveredBy_extension)
+    https://github.com/open-contracting-extensions/ocds_coveredBy_extension
+    https://github.com/open-contracting-extensions/ocds_procurementMethodModalities_extension
+ )
 end
 
 json.releases do

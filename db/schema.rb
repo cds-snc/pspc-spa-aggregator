@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_26_164524) do
+ActiveRecord::Schema.define(version: 2019_07_17_154516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -110,6 +110,11 @@ ActiveRecord::Schema.define(version: 2019_06_26_164524) do
     t.bigint "contact_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "delivery_date"
+    t.datetime "delivery_start_date"
+    t.datetime "delivery_end_date"
+    t.boolean "use_electronic_auction", default: false
+    t.boolean "is_negotiated", default: false
     t.index ["contact_id"], name: "index_procurements_on_contact_id"
     t.index ["ocid"], name: "index_procurements_on_ocid", unique: true
     t.index ["tender_id"], name: "index_procurements_on_tender_id", unique: true
