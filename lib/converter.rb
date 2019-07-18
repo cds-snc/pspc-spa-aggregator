@@ -68,8 +68,19 @@ class Opportunity
 
     ret[:procuringEntity] = @procuring_entity.ToProcuringEntityOCDS if @procuring_entity.has_data?
 
-    ret[:title] = @title_en unless @title_en.blank?
-    ret[:title_fr] = @title_fr unless @title_fr.blank?
+    if !@title_en.blank?
+      ret[:title] = @title_en
+    else
+      ret[:title] = @description_en[0..128]
+      ret[:title] += "..." if @description_en.length > 128
+    end
+
+    if !@title_fr.blank?
+      ret[:title_fr] = @title_fr
+    elsif !@description_fr.blank?
+      ret[:title_fr] = @description_fr[0..128]
+      ret[:title_fr] += "..." if @description_fr.length > 128
+    end
 
     ret[:description] = @description_en unless @description_en.blank?
     ret[:description_fr] = @description_fr unless @description_fr.blank?
