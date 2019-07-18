@@ -2,7 +2,9 @@ module Api::V1
 
 class ProcurementsController < ApplicationController
   def index
-    @procurements = Procurement.all
+    @procurements = Procurement.all.includes(
+        :trade_agreements, :items, :recurrences, contact: [
+          :languages, :procuring_entity])
     render jbuilder: @procurements
   end
 
