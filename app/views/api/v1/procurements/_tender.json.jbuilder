@@ -1,11 +1,13 @@
 json.id tender.id
-json.title tender.title_en
-json.title_fr tender.title_fr
-json.description tender.description_en
-json.description_fr tender.description_fr
+json.title tender.title_en if !tender.title_en.blank?
+json.title_fr tender.title_fr if !tender.title_fr.blank?
+json.description tender.description_en if !tender.description_en.blank?
+json.description_fr tender.description_fr if !tender.description_fr.blank?
 
-json.items do
-  json.array! tender.items, partial: 'api/v1/procurements/item', as: :item
+if !tender.items.empty?
+  json.items do
+    json.array! tender.items, partial: 'api/v1/procurements/item', as: :item
+  end
 end
 
 if !tender.procuring_entity.nil?
@@ -57,9 +59,9 @@ if !tender.contract_start_date.blank? || !tender.contract_end_date.blank?
   end
 end
 
-json.procurementMethod tender.procurement_method
-json.procurementMethodDetails tender.procurement_method_details_en
-json.procurementMethodDetails_fr tender.procurement_method_details_fr
+json.procurementMethod tender.procurement_method if !tender.procurement_method.blank?
+json.procurementMethodDetails tender.procurement_method_details_en if !tender.procurement_method_details_en.blank?
+json.procurementMethodDetails_fr tender.procurement_method_details_fr if !tender.procurement_method_details_fr.blank?
 
 modalities = []
 modalities << 'electronicAuction' if tender.use_electronic_auction
@@ -117,6 +119,8 @@ json.awardCriteria tender.award_criteria unless tender.award_criteria.blank?
 json.awardCriteriaDetails tender.award_criteria_details_en unless tender.award_criteria_details_en.blank?
 json.awardCriteriaDetails_fr tender.award_criteria_details_fr unless tender.award_criteria_details_fr.blank?
 
-json.coveredBy do
-  json.array! tender.trade_agreements.collect { |a| a.name }
+if !tender.trade_agreements.empty?
+  json.coveredBy do
+    json.array! tender.trade_agreements.collect { |a| a.name }
+  end
 end
