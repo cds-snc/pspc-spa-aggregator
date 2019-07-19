@@ -13,8 +13,8 @@ end
 if !tender.procuring_entity.nil?
   json.procuringEntity do
     json.id tender.procuring_entity.identifier
-    json.name tender.procuring_entity.name_en
-    json.name_fr tender.procuring_entity.name_fr
+    json.name tender.procuring_entity.name_en unless tender.procuring_entity.name_en.blank?
+    json.name_fr tender.procuring_entity.name_fr unless tender.procuring_entity.name_fr.blank?
 
     json.contactPoint do
       json.name tender.contact.name unless tender.contact.name.blank?

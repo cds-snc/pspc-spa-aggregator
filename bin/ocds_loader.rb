@@ -13,6 +13,8 @@ ocid['releases'].each do |rel|
   parties = {}
   rel['parties'].each do |party|
     entity = ProcuringEntity.find_or_create_by(name_en: party['name'])
+    entity.identifier = entity.identifier || party['id']
+
     entity.name_en = party['name']
     entity.name_fr = party['name_fr']
 
@@ -22,7 +24,9 @@ ocid['releases'].each do |rel|
       entity.province = party['address']['region']
       entity.postal_code = party['address']['postalCode']
     end
-    parties[entity.identifier] = entity
+    entity.save!
+
+    parties[party['id']] = entity
   end
 
   tender = rel['tender']

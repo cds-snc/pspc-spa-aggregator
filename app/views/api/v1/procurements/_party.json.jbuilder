@@ -1,7 +1,7 @@
 json.id party.identifier
 json.role ['procuringEntity']
-json.name party.name_en
-json.name_fr party.name_fr
+json.name party.name_en unless party.name_en.blank?
+json.name_fr party.name_fr unless party.name_fr.blank?
 
 if !party.street_address.blank? || !party.city.blank? ||
     !party.province.blank? || !party.postal_code.blank?
