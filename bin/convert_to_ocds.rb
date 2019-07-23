@@ -13,6 +13,8 @@ conv = if fpt == :AB
   Converter::Alberta.new
 elsif fpt == :BC
   Converter::BritishColumbia.new
+elsif fpt == :GC
+  Converter::FederalGovernment.new
 elsif fpt == :NS
   Converter::NovaScotia.new
 elsif fpt == :NU
@@ -22,7 +24,7 @@ elsif fpt == :QC
 elsif fpt == :YK
   Converter::Yukon.new
 else
-  puts "Unknown FPT value #{fpt}, expected one of: ab, bc, ns, nu, qc, yk"
+  puts "Unknown FPT value #{fpt}, expected one of: ab, bc, gc, ns, nu, qc, yk"
   exit
 end
 

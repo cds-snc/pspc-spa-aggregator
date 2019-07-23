@@ -260,6 +260,7 @@ end
 
 autoload :Alberta, 'converter/alberta'
 autoload :BritishColumbia, 'converter/british_columbia'
+autoload :FederalGovernment, 'converter/federal_government'
 autoload :NovaScotia, 'converter/nova_scotia'
 autoload :Nunavut, 'converter/nunavut'
 autoload :Quebec, 'converter/quebec'
