@@ -212,7 +212,8 @@ class Contact
   end
 
   def has_data?
-    !@name.blank? || !@email.blank? || !@phone.blank? || !@fax.blank? || !@url.blank?
+    !@name.blank? || !@email.blank? || !@phone.blank? || !@fax.blank? ||
+      !@url.blank? || !@languages.empty?
   end
 
   def ToOCDS
