@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>Procurements</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body>
+    <header>
+      <h1>
+        <%= link_to 'Procurements', root_url %>
+      </h1>
+    </header>
+    <article>
+      <div class='warning'>
+        This site is for development purposes only. Please refer to buyer tender
+        websites for all tender opportunities. The tenders displayed on this site
+        may be out of date or expired.
+      </div>
+
+      <%= yield %>
+    </article>
+    <footer>
+      Data used under <%= link_to 'Open Government License - Canada', 'http://open.canada.ca/en/open-government-licence-canada' %>
+    </footer>
+  </body>
+</html>

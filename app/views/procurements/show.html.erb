@@ -1,0 +1,151 @@
+<h1><%= @procurement.title_en %></h1>
+<h6><%= @procurement.ocid %></h6>
+
+<div class='tender-period'>
+  <h2>Tender Period</h2>
+  <% if !@procurement.tender_period_start_date.nil? %>
+    <div>
+      <b>From:</b> &nbsp;
+      <%= @procurement.tender_period_start_date %>
+    </div>
+  <% end %>
+  <% if !@procurement.tender_period_end_date.nil? %>
+    <div>
+      <b>To:</b> &nbsp;
+      <%= @procurement.tender_period_end_date %>
+    </div>
+  <% end %>
+</div>
+
+<div class='contract-period'>
+  <h2>Contract Period</h2>
+  <% if !@procurement.contract_start_date.nil? %>
+    <div>
+      <b>From:</b> &nbsp;
+      <%= @procurement.contract_start_date %>
+    </div>
+  <% end %>
+  <% if !@procurement.contract_end_date.nil? %>
+    <div>
+      <b>To:</b> &nbsp;
+      <%= @procurement.contract_end_date %>
+    </div>
+  <% end %>
+</div>
+
+<h2>Description</h2>
+<pre><%= @procurement.description_en %></pre>
+
+<% @procurement.items.each do |item| %>
+  <div class='item'>
+    <%= item.id %>&nbsp;&mdash;&nbsp;
+    <%= item.description_en %>
+    <% if !item.quantity.blank? %>
+      &nbsp;&mdash;&nbsp;<%= item.quantitiy %> <%= item.units_en %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if !@procurement.contact.nil? %>
+  <div id='procuring-entity'>
+    <h1>Procuring Entity</h1>
+    <% entity = @procurement.contact.procuring_entity %>
+    <%= entity.name_en %>
+    <% if !entity.street_address.blank? %>
+      <p><%= entity.street_address %></p>
+    <% end %>
+    <% if !entity.city.blank? %>
+      <p><%= entity.city %></p>
+    <% end %>
+    <% if !entity.province.blank? %>
+      <p><%= entity.province %></p>
+    <% end %>
+    <% if !entity.postal_code.blank? %>
+      <p><%= entity.postal_code %></p>
+    <% end %>
+
+    <div class='contact'>
+      <% contact = @procurement.contact %>
+      <p><%= contact.name %></p>
+      <% if !contact.email.blank? %>
+        <p><%= contact.email %></p>
+      <% end %>
+      <% if !contact.phone.blank? %>
+        <p><%= contact.phone %></p>
+      <% end %>
+      <% if !contact.fax.blank? %>
+        <p><%= contact.fax %></p>
+      <% end %>
+      <% if !contact.url.blank? %>
+        <p><%= contact.url %></p>
+      <% end %>
+    </div>
+
+  </div>
+<% end %>
+
+<% if !@procurement.award_criteria.blank? %>
+  <h1>Award Criteria</h1>
+  <%= @procurement.award_criteria %>
+  <%= @procurement.award_criteria_details_en %>
+<% end %>
+
+<% if !@procurement.eligibility_criteria_en.blank? %>
+  <%= @procurement.eligibility_criteria_en %>
+<% end %>
+
+<% if !@procurement.delivery_date.blank? ||
+      !@procurement.delivery_start_date.blank? ||
+      !@procurement.delivery_end_date.blank? %>
+  <h1>Delivery time frame</h1>
+  <% if !@procurement.delivery_date.blank? %>
+    <p>Delivery date: <%= @procurement.delivery_date %></p>
+  <% elsif !@procurement.delivery_start_date.blank? ||
+           !@procurement.delivery_end_date.blank? %>
+    <% if !@procurement.delivery_start_date.blank? %>
+      <p>Start date: <%= @procurement.delivery_start_date %></p>
+    <% end %>
+    <% if !@procurement.delivery_end_date.blank? %>
+      <p>End date: <%= @procurement.delivery_end_date %> </p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if !@procurement.rfp_due_date.blank? ||
+      !@procurement.rfp_description_en.blank? %>
+  <h1>Request for Participation information</h1>
+  <% if !@procurement.rfp_due_date.blank? %>
+    <p>Due: <%= @procurement.rfp_due_date %></p>
+  <% end %>
+  <%= @procurement.rfp_description_en %>
+<% end %>
+
+<div>
+  <%= @procurement.options_en %>
+</div>
+
+<% if !@procurement.procurement_method.blank? ||
+      !@procurement.procurement_method_details_en.blank? %>
+  <div id='procurement-method'>
+    <h1>Procurement Method</h1>
+    <% if !@procurement.procurement_method.blank? %>
+      <%= @procurement.procurement_method %>&nbsp;&mdash;&nbsp;
+    <% end %>
+    <%= @procurement.procurement_method_details_en %>
+  </div>
+<% end %>
+
+<% if !@procurement.submission_method.blank? ||
+      !@procurement.submission_method_details_en.blank? %>
+  <div id='submission-method'>
+    Submission method: <%= @procurement.submission_method %> &mdash;
+    <%= @procurement.submission_method_details_en %>
+  </div>
+<% end %>
+
+<div>
+  <% @procurement.trade_agreements.each do |agree| %>
+    <p><%= agree.name %></p>
+  <% end %>
+</div>
+

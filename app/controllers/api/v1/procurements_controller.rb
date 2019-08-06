@@ -1,6 +1,6 @@
 module Api::V1
 
-class ProcurementsController < ApplicationController
+class ProcurementsController < Api::ApiController
   def index
     # TODO(dan.sinclair): This finds a random 25 elements, probably not what
     #  is desired in the future.
@@ -13,24 +13,6 @@ class ProcurementsController < ApplicationController
   def show
     @procurement = Procurement.find(params[:id])
     render jbuilder: @procurement
-  end
-
-  def search
-    @procurements = []
-    # TODO(dan.sinclair): Artificially limited to 25 responses.
-    results = PgSearch.multisearch(params[:q]).first(25)
-    results.each do |res|
-      if res.searchable_type == "Procurement"
-        @procurements << res.searchable
-      elsif res.searchable_type == "ProcurementItem" ||
-          res.searchable_type == "ProcurementTradeAgreement"
-        @procurements << res.searchable.procurement
-      else
-        @procurements << res.searchable.procurements
-      end
-    end
-    @procurements = @procurements.flatten.uniq
-    render :index, jbuilder: @procurements
   end
 end
 
