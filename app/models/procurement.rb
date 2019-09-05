@@ -15,6 +15,8 @@ class Procurement < ApplicationRecord
   has_many :trade_agreements, class_name: :ProcurementTradeAgreement
 
   def procuring_entity
+    return nil if contact.nil?
+
     contact.procuring_entity
   end
 

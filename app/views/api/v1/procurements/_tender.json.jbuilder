@@ -1,74 +1,104 @@
 json.id tender.id
-json.title tender.title_en
-json.title_fr tender.title_fr
-json.description tender.description_en
-json.description_fr tender.description_fr
+json.title tender.title_en if !tender.title_en.blank?
+json.title_fr tender.title_fr if !tender.title_fr.blank?
+json.description tender.description_en if !tender.description_en.blank?
+json.description_fr tender.description_fr if !tender.description_fr.blank?
 
-json.items do
-  json.array! tender.items, partial: 'api/v1/procurements/item', as: :item
+if !tender.items.empty?
+  json.items do
+    json.array! tender.items, partial: 'api/v1/procurements/item', as: :item
+  end
 end
 
-json.procuringEntity do
-  json.id tender.procuring_entity.identifier
-  json.name tender.procuring_entity.name_en
-  json.name_fr tender.procuring_entity.name_fr
+if !tender.procuring_entity.nil?
+  json.procuringEntity do
+    json.id tender.procuring_entity.identifier
+    json.name tender.procuring_entity.name_en unless tender.procuring_entity.name_en.blank?
+    json.name_fr tender.procuring_entity.name_fr unless tender.procuring_entity.name_fr.blank?
 
-  json.address do
-    json.streetAddress tender.procuring_entity.street_address
-    json.locality tender.procuring_entity.city
-    json.region tender.procuring_entity.province
-    json.postalCode tender.procuring_entity.postal_code
-  end
+    json.contactPoint do
+      json.name tender.contact.name unless tender.contact.name.blank?
+      json.email tender.contact.email unless tender.contact.email.blank?
+      json.telephone tender.contact.phone unless tender.contact.phone.blank?
+      json.faxNumber tender.contact.fax unless tender.contact.fax.blank?
+      json.url tender.contact.url unless tender.contact.url.blank?
 
-  json.contactPoint do
-    json.name tender.contact.name
-    json.email tender.contact.email
-    json.telephone tender.contact.phone
-    json.faxNumber tender.contact.fax
-    json.url tender.contact.url
-
-    json.availableLanguage do
-      json.array! tender.contact.languages.collect { |l| l.code }
+      if !tender.contact.languages.empty?
+        json.availableLanguage do
+          json.array! tender.contact.languages.collect { |l| l.code }
+        end
+      end
     end
   end
 end
 
-json.options tender.options_en
-json.options_fr tender.options_fr
+json.options tender.options_en unless tender.options_en.blank?
+json.options_fr tender.options_fr unless tender.options_fr.blank?
 
-json.recurrence do
-  json.description tender.recurrence_description_en
-  json.description_fr tender.recurrence_description_fr
+if !tender.recurrence_description_en.blank? ||
+    !tender.recurrence_description_fr.blank? ||
+    !tender.recurrences.empty?
+  json.recurrence do
+    json.description tender.recurrence_description_en unless tender.recurrence_description_en.blank?
+    json.description_fr tender.recurrence_description_fr unless tender.recurrence_description_fr.blank?
 
-  json.dates do
-    json.array! tender.recurrences,
-        partial: "api/v1/procurements/recurrence_dates",
-        as: :recurrence
+    if !tender.recurrences.empty?
+      json.dates do
+        json.array! tender.recurrences,
+            partial: "api/v1/procurements/recurrence_dates",
+            as: :recurrence
+      end
+    end
   end
 end
 
-json.contractPeriod do
-  json.startDate tender.contract_start_date
-  json.endDate tender.contract_end_date
+if !tender.contract_start_date.blank? || !tender.contract_end_date.blank?
+  json.contractPeriod do
+    json.startDate tender.contract_start_date unless tender.contract_start_date.blank?
+    json.endDate tender.contract_end_date unless tender.contract_end_date.blank?
+  end
 end
 
-json.procurementMethod tender.procurement_method
-json.procurementMethodDetails tender.procurement_method_details_en
-json.procurementMethodDetails_fr tender.procurement_method_details_fr
+json.procurementMethod tender.procurement_method if !tender.procurement_method.blank?
+json.procurementMethodDetails tender.procurement_method_details_en if !tender.procurement_method_details_en.blank?
+json.procurementMethodDetails_fr tender.procurement_method_details_fr if !tender.procurement_method_details_fr.blank?
 
+modalities = []
+modalities << 'electronicAuction' if tender.use_electronic_auction
+modalities << 'negotiated' if tender.is_negotiated
+
+if !modalities.empty?
+  json.procurementMethodModalities modalities
+end
+
+milestones = []
 if tender.rfp_due_date != nil ||
     tender.rfp_description_en != nil ||
     tender.rfp_description_fr != nil
-  json.milestones do
-    data = [
-      {
-        type: 'RFP',
-        due_date: tender.rfp_due_date,
-        description_en: tender.rfp_description_en,
-        description_fr: tender.rfp_description_fr
-      }
-    ]
+  milestones <<
+    {
+      type: 'requestToParticipate',
+      due_date: tender.rfp_due_date,
+      description_en: tender.rfp_description_en,
+      description_fr: tender.rfp_description_fr
+    }
+end
+if tender.delivery_date != nil || tender.delivery_start_date != nil ||
+    tender.delivery_end_date != nil
+  data = { type: 'delivery' }
+  data['dueDate'] = tender.delivery_date unless tender.delivery_date.blank?
+  if !tender.delivery_start_date.blank? || !tender.delivery_end_date.blank?
+    data['period'] = {}
+    data['period']['startDate'] =
+        tender.delivery_start_date unless tender.delivery_start_date.blank?
+    data['period']['endDate'] =
+        tender.delivery_end_date unless tender.delivery_end_date.blank?
+  end
+  milestones << data
+end
 
+if !milestones.empty?
+  json.milestones do
     json.array! data, partial: 'api/v1/procurements/milestone', as: :milestone
   end
 end
@@ -78,17 +108,19 @@ json.tenderPeriod do
   json.endDate tender.tender_period_end_date
 end
 
-json.submissionMethod tender.submission_method
-json.submissionMethodDetails tender.submission_method_details_en
-json.submissionMethodDetails_fr tender.submission_method_details_fr
+json.submissionMethod tender.submission_method unless tender.submission_method.blank?
+json.submissionMethodDetails tender.submission_method_details_en unless tender.submission_method_details_en.blank?
+json.submissionMethodDetails_fr tender.submission_method_details_fr unless tender.submission_method_details_fr.blank?
 
-json.eligibilityCriteria tender.eligibility_criteria_en
-json.eligibilityCriteria_fr tender.eligibility_criteria_fr
+json.eligibilityCriteria tender.eligibility_criteria_en unless tender.eligibility_criteria_en.blank?
+json.eligibilityCriteria_fr tender.eligibility_criteria_fr unless tender.eligibility_criteria_fr.blank?
 
-json.awardCriteria tender.award_criteria
-json.awardCriteriaDetails tender.award_criteria_details_en
-json.awardCriteriaDetails_fr tender.award_criteria_details_fr
+json.awardCriteria tender.award_criteria unless tender.award_criteria.blank?
+json.awardCriteriaDetails tender.award_criteria_details_en unless tender.award_criteria_details_en.blank?
+json.awardCriteriaDetails_fr tender.award_criteria_details_fr unless tender.award_criteria_details_fr.blank?
 
-json.coveredBy do
-  json.array! tender.trade_agreements.collect { |a| a.name }
+if !tender.trade_agreements.empty?
+  json.coveredBy do
+    json.array! tender.trade_agreements.collect { |a| a.name }
+  end
 end
