@@ -1,0 +1,48 @@
+<%= form_tag(search_url) do %>
+  Search:
+  <%= text_field_tag(:q, nil) %>
+  <%= submit_tag('go') %>
+<% end %>
+
+<div class='procurement-list'>
+  <% @procurements.each do |p| %>
+    <div class='procurement-short'>
+      <h1>
+        <%= link_to p.title_en, p %>
+      </h1>
+      <section>
+        <% if !p.procuring_entity.nil? %>
+          <div class='buyer-org'>
+            <%= p.procuring_entity.name_en %>
+          </div>
+        <% end %>
+
+        <div class='tender-period'>
+          <h2>Tender Period</h2>
+          <% if !p.tender_period_start_date.nil? %>
+            <div>
+              <b>From:</b> &nbsp;
+              <%= p.tender_period_start_date %>
+            </div>
+          <% end %>
+          <% if !p.tender_period_end_date.nil? %>
+            <div>
+              <b>To:</b> &nbsp;
+              <%= p.tender_period_end_date %>
+            </div>
+          <% end %>
+        </div>
+
+        <h2>Description</h2>
+        <%= p.description_en %>
+
+        <% if !p.procurement_method.blank? %>
+          <div>
+            <h2>Procurement Method</h2>
+            <%= p.procurement_method %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+  <% end %>
+</div>

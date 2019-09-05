@@ -6,5 +6,9 @@ Rails.application.routes.draw do
     end
   end
 
-  root to: 'api/v1/procurements#index'
+  get '/procurements/search', to: 'procurements#index'
+  post '/procurements/search', to: 'procurements#search', as: 'search'
+  resources :procurements, only: [:index, :show], constraints: { format: :html }
+
+  root to: 'procurements#index'
 end
