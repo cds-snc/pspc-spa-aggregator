@@ -14,6 +14,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'rack-cors'
 
+gem 'nokogiri', '>=1.10.4'
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
